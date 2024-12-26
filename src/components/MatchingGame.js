@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './MatchingGame.css';
+import { db } from '../firebase';
+import { collection, addDoc, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
 const shapes = ['circle', 'square', 'triangle', 'star'];
 
 function MatchingGame() {
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(5);
   const [currentShape, setCurrentShape] = useState(null);
   const [previousShape, setPreviousShape] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [pressedKey, setPressedKey] = useState(null);
   const [username, setUsername] = useState('');
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [leaderboard, setLeaderboard] = useState(() => {
-    const saved = localStorage.getItem('gameLeaderboard');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [leaderboard, setLeaderboard] = useState([]);
   const [streak, setStreak] = useState(0);
   const [multiplier, setMultiplier] = useState(1);
   const [showWrongAnswer, setShowWrongAnswer] = useState(false);
@@ -94,17 +93,47 @@ function MatchingGame() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [currentShape, previousShape, gameOver, streak, multiplier]);
 
-  const handleUsernameSubmit = (e) => {
+  // Add this new useEffect to fetch leaderboard data when component mounts
+  useEffect(() => {
+    fetchLeaderboard();
+  }, []);
+
+  // Add this new function to fetch leaderboard data
+  const fetchLeaderboard = async () => {
+    try {
+      const leaderboardRef = collection(db, 'leaderboard');
+      const q = query(leaderboardRef, orderBy('score', 'desc'), limit(10));
+      const querySnapshot = await getDocs(q);
+      
+      const leaderboardData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      setLeaderboard(leaderboardData);
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
+    }
+  };
+
+  // Update the handleUsernameSubmit function
+  const handleUsernameSubmit = async (e) => {
     e.preventDefault();
     if (username.length === 3) {
-      const newScore = { username: username.toUpperCase(), score, date: new Date().toISOString() };
-      const updatedLeaderboard = [...leaderboard, newScore]
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10); // Keep only top 10 scores
-      
-      setLeaderboard(updatedLeaderboard);
-      localStorage.setItem('gameLeaderboard', JSON.stringify(updatedLeaderboard));
-      setShowLeaderboard(true);
+      try {
+        const leaderboardRef = collection(db, 'leaderboard');
+        await addDoc(leaderboardRef, {
+          username: username.toUpperCase(),
+          score,
+          date: new Date().toISOString()
+        });
+
+        // Fetch updated leaderboard
+        await fetchLeaderboard();
+        setShowLeaderboard(true);
+      } catch (error) {
+        console.error('Error saving score:', error);
+      }
     }
   };
 
@@ -148,7 +177,7 @@ function MatchingGame() {
                   </div>
                   {leaderboard.map((entry, index) => (
                     <div 
-                      key={index} 
+                      key={entry.id} 
                       className={`leaderboard-entry ${entry.username === username ? 'current-user' : ''}`}
                     >
                       <span>{index + 1}</span>

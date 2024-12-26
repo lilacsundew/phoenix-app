@@ -1,24 +1,18 @@
 import './App.css';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import MatchingGame from './components/MatchingGame';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import SignOutButton from './components/SignOutButton';
 
-function HomeComponent() {
-  const navigate = useNavigate();
-
+// Create an AuthRoute component to wrap authenticated routes
+function AuthRoute({ children }) {
   return (
-    <div className="home-container">
-      <h1>Welcome</h1>
-      <div className="button-container">
-        <button 
-          className="home-button" 
-          onClick={() => navigate('/dashboard')}
-        >
-          Welcome Back
-        </button>
-        <button className="home-button">Sign Up</button>
-      </div>
-    </div>
+    <>
+      <SignOutButton />
+      {children}
+    </>
   );
 }
 
@@ -26,9 +20,19 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<HomeComponent />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/game" element={<MatchingGame />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={
+          <AuthRoute>
+            <Dashboard />
+          </AuthRoute>
+        } />
+        <Route path="/game" element={
+          <AuthRoute>
+            <MatchingGame />
+          </AuthRoute>
+        } />
       </Routes>
     </div>
   );

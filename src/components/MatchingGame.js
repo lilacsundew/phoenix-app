@@ -7,7 +7,7 @@ const shapes = ['circle', 'square', 'triangle', 'star'];
 
 function MatchingGame() {
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(30);
   const [currentShape, setCurrentShape] = useState(null);
   const [previousShape, setPreviousShape] = useState(null);
   const [gameOver, setGameOver] = useState(false);

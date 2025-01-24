@@ -5,6 +5,7 @@ import MatchingGame from './components/MatchingGame';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import SignOutButton from './components/SignOutButton';
+import MemoryGame from './components/MemoryGame';
 
 // Create an AuthRoute component to wrap authenticated routes
 function AuthRoute({ children }) {
@@ -31,6 +32,11 @@ function App() {
         <Route path="/game" element={
           <AuthRoute>
             <MatchingGame />
+          </AuthRoute>
+        } />
+        <Route path="/memory-game" element={
+          <AuthRoute>
+            <MemoryGame />
           </AuthRoute>
         } />
       </Routes>

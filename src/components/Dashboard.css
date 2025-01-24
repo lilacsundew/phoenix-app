@@ -66,4 +66,27 @@
 .welcome-section p {
   color: #666;
   font-size: 1.1rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.memory-game-button {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.memory-game-button:hover {
+  background-color: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 } 

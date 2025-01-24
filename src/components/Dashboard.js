@@ -10,12 +10,20 @@ function Dashboard() {
       <header className="dashboard-header">
         <div className="header-content">
           <h1>Game Dashboard</h1>
-          <button 
-            className="start-game-button"
-            onClick={() => navigate('/game')}
-          >
-            Start Game
-          </button>
+          <div className="button-group">
+            <button 
+              className="start-game-button"
+              onClick={() => navigate('/game')}
+            >
+              Start Game
+            </button>
+            <button 
+              className="memory-game-button"
+              onClick={() => navigate('/memory-game')}
+            >
+              Play Memory Game
+            </button>
+          </div>
         </div>
       </header>
       

@@ -51,6 +51,14 @@ function Login() {
         <p className="auth-switch">
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
+        <a 
+          href="https://phoenixkilgore.com" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="creator-button"
+        >
+          Creator Web Page
+        </a>
       </div>
     </div>
   );
